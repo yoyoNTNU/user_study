@@ -12,7 +12,7 @@ const CONFIG = {
 
   // 每位使用者實際要作答幾組(從 TOTAL_GROUPS 裡隨機抽樣,不重複)
   // 如果想要每個人都做完全部組別,把這個設成跟 TOTAL_GROUPS 一樣即可
-  GROUPS_PER_SESSION: 30,
+  GROUPS_PER_SESSION: 38,
 
   // 4 種方法的「真實名稱」與「對應的影片檔名關鍵字」
   // 影片檔名規則: videos/group{編號}_{KEY}.mp4

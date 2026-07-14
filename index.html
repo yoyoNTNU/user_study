@@ -75,7 +75,56 @@
       </p>
     </div>
 
-    <button id="btn-start" class="btn-primary">開始作答</button>
+    <button id="btn-intro-next" class="btn-primary">下一步</button>
+  </div>
+</section>
+
+<!-- ============ 基本資料頁 ============ -->
+<section id="screen-profile" class="screen hidden">
+  <div class="intro-card">
+    <p class="eyebrow">STEP 1</p>
+    <h1>基本資料</h1>
+    <p class="intro-text">
+      開始作答前,請先填寫以下基本資料。
+    </p>
+
+    <div class="profile-section">
+      <div class="profile-field">
+        <label class="profile-label" for="profile-name">您的姓名(非必填)</label>
+        <input type="text" id="profile-name" class="profile-input" placeholder="">
+      </div>
+
+      <div class="profile-field">
+        <p class="profile-label">您的性別 <span class="required-mark">*</span></p>
+        <div class="radio-group" id="profile-gender-group">
+          <label class="radio-option">
+            <input type="radio" name="profile-gender" value="男性">
+            <span>男性</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="profile-gender" value="女性">
+            <span>女性</span>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="profile-gender" value="其他">
+            <span>其他</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="profile-field">
+        <p class="profile-label">您的年齡段 <span class="required-mark">*</span></p>
+        <div class="radio-group" id="profile-age-group">
+          <label class="radio-option"><input type="radio" name="profile-age" value="25歲以下"><span>25 歲以下</span></label>
+          <label class="radio-option"><input type="radio" name="profile-age" value="26-35歲"><span>26-35 歲</span></label>
+          <label class="radio-option"><input type="radio" name="profile-age" value="36-45歲"><span>36-45 歲</span></label>
+          <label class="radio-option"><input type="radio" name="profile-age" value="46-55歲"><span>46-55 歲</span></label>
+          <label class="radio-option"><input type="radio" name="profile-age" value="55歲及以上"><span>55 歲及以上</span></label>
+        </div>
+      </div>
+    </div>
+
+    <button id="btn-start" class="btn-primary" disabled>開始作答</button>
   </div>
 </section>
 

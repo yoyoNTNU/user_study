@@ -92,8 +92,10 @@
   // ---------------- rendering ----------------
   const el = {
     screenIntro: document.getElementById("screen-intro"),
+    screenProfile: document.getElementById("screen-profile"),
     screenStudy: document.getElementById("screen-study"),
     screenDone: document.getElementById("screen-done"),
+    btnIntroNext: document.getElementById("btn-intro-next"),
     btnStart: document.getElementById("btn-start"),
     btnNext: document.getElementById("btn-next"),
     introTotalGroups: document.getElementById("intro-total-groups"),
@@ -112,6 +114,7 @@
     zoomModal: document.getElementById("zoom-modal"),
     zoomContent: document.getElementById("zoom-content"),
     zoomClose: document.getElementById("zoom-close"),
+    profileName: document.getElementById("profile-name"),
   };
 
   if (el.zoomModal && el.zoomClose && el.zoomContent) {
@@ -135,9 +138,11 @@
 
   function showScreen(name) {
     el.screenIntro.classList.add("hidden");
+    el.screenProfile.classList.add("hidden");
     el.screenStudy.classList.add("hidden");
     el.screenDone.classList.add("hidden");
     if (name === "intro") el.screenIntro.classList.remove("hidden");
+    if (name === "profile") el.screenProfile.classList.remove("hidden");
     if (name === "study") el.screenStudy.classList.remove("hidden");
     if (name === "done") el.screenDone.classList.remove("hidden");
   }
@@ -272,6 +277,7 @@
     });
 
     return {
+      record_type: "answer",
       timestamp: new Date().toISOString(),
       session_id: state.sessionId,
       group_id: gId,
@@ -336,6 +342,49 @@
     renderGroup();
   }
 
+  // ---------------- 基本資料 (profile) ----------------
+  function getSelectedRadioValue(name) {
+    const checked = document.querySelector(`input[name="${name}"]:checked`);
+    return checked ? checked.value : null;
+  }
+
+  function isProfileValid() {
+    return Boolean(getSelectedRadioValue("profile-gender")) && Boolean(getSelectedRadioValue("profile-age"));
+  }
+
+  function updateStartButton() {
+    if (el.btnStart) el.btnStart.disabled = !isProfileValid();
+  }
+
+  function buildProfilePayload() {
+    return {
+      record_type: "profile",
+      timestamp: new Date().toISOString(),
+      session_id: state.sessionId,
+      name: el.profileName ? el.profileName.value.trim() : "",
+      gender: getSelectedRadioValue("profile-gender"),
+      age_range: getSelectedRadioValue("profile-age"),
+    };
+  }
+
+  function submitProfile(payload) {
+    // 基本資料只送一次,採 fire-and-forget:失敗也不擋使用者開始作答,
+    // 只在 console 留紀錄方便之後排查。
+    fetch(CONFIG.SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+    }).catch((err) => {
+      console.error("基本資料送出失敗:", err);
+    });
+  }
+
+  document
+    .querySelectorAll('input[name="profile-gender"], input[name="profile-age"]')
+    .forEach((input) => input.addEventListener("change", updateStartButton));
+  updateStartButton();
+
   // ---------------- init ----------------
   const displayCount =
     CONFIG.GROUPS_PER_SESSION && CONFIG.GROUPS_PER_SESSION < CONFIG.TOTAL_GROUPS
@@ -344,8 +393,14 @@
   el.introTotalGroups.textContent = displayCount;
   el.groupTotal.textContent = pad2(displayCount);
 
+  el.btnIntroNext.addEventListener("click", () => {
+    showScreen("profile");
+  });
+
   el.btnStart.addEventListener("click", () => {
+    if (!isProfileValid()) return; // 保險起見:必填未完成就不繼續(按鈕理論上也是disabled)
     state.sessionId = genSessionId();
+    submitProfile(buildProfilePayload());
     state.groupIndex = 1;
     const allGroupNumbers = Array.from(
       { length: CONFIG.TOTAL_GROUPS },

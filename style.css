@@ -130,6 +130,68 @@ button { font-family: inherit; }
   cursor: not-allowed;
 }
 
+/* ---------------- Basic info (profile) section on intro screen ---------------- */
+.profile-section {
+  margin: 8px 0 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.profile-field {
+  margin-bottom: 22px;
+}
+.profile-field:last-child { margin-bottom: 0; }
+
+.profile-label {
+  display: block;
+  font-size: 14px;
+  color: var(--paper);
+  margin: 0 0 10px;
+}
+
+.required-mark {
+  color: #e0607a;
+  margin-left: 2px;
+}
+
+.profile-input {
+  width: 100%;
+  background: var(--panel-hover);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--paper);
+}
+.profile-input:focus {
+  outline: none;
+  border-color: var(--indigo);
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 4px;
+  font-size: 14px;
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--indigo);
+  cursor: pointer;
+}
+
 /* ---------------- Example (bad-case) gallery on intro screen ---------------- */
 .example-section {
   margin: 8px 0 20px;
