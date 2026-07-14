@@ -283,7 +283,7 @@
 
   function submitCurrentGroup() {
     const payload = buildPayload();
-    el.submitStatus.textContent = "傳送中…";
+    el.submitStatus.textContent = "載入下一題中...";
     el.btnNext.disabled = true;
 
     fetch(CONFIG.SCRIPT_URL, {
@@ -306,7 +306,7 @@
   }
 
   function retrySubmit() {
-    el.submitStatus.textContent = "傳送中…";
+    el.submitStatus.textContent = "載入下一題中...";
     el.btnNext.disabled = true;
     fetch(CONFIG.SCRIPT_URL, {
       method: "POST",
