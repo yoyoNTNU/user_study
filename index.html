@@ -17,15 +17,15 @@
     <p class="eyebrow">USER STUDY</p>
     <h1>虛擬換裝結果評比</h1>
     <p class="intro-text">
-      接下來你會看到 <span id="intro-total-groups">70</span> 組結果。每一組包含:
-      <strong>1 部換裝前的原始影片</strong>、<strong>2 張要換上的衣服正反面照片</strong>,
-      以及 <strong>4 部換裝後的3DGS旋轉展示影片</strong>。影片會環繞人物旋轉上、中、下三圈，這 4 部影片是由不同方法產生的,
+      接下來你會看到 <span id="intro-total-groups">30</span> 組結果。每一組包含:
+      <strong>2 張要換上的衣服正反面照片</strong>,<strong>4 部換裝後的3DGS旋轉展示影片</strong>
+      <strong>，以及4張由六個視角組成的大圖</strong>。影片會環繞人物旋轉上、中、下三圈，這 4 部影片是由不同方法產生的,
       但畫面上只會標示 <span class="tag-inline">A</span>
       <span class="tag-inline">B</span><span class="tag-inline">C</span><span class="tag-inline">D</span>,
       不會告訴你各自使用了什麼方法。
     </p>
     <p class="intro-text">
-      請仔細觀看 4 部影片後,並依需求自行<strong>放大、暫停、調整撥放進度</strong>,
+      請仔細觀看 4 部影片或4張大圖後,並依需求自行<strong>放大、暫停、調整撥放進度</strong>,
       接著依據每一題的問題,選出你認為表現最好的一部影片。
       每一組會有 3 個小問題,全部回答後按「下一組」即可繼續。
     </p>
@@ -142,36 +142,27 @@
     </p>
   </header>
 
-  <main class="study-body">
-    <aside class="reference-panel">
-      <div class="ref-block">
-        <p class="panel-label">原始影片(換裝前)</p>
+  <main class="study-body layout-vertical">
+    <!-- 頂部：衣物參考圖 -->
+    <section class="reference-top-panel">
+      <p class="panel-label">要換上的衣服參考圖</p>
+      <div class="ref-image-pair">
         <div class="ref-media-frame" data-zoomable="true">
-          <video id="original-video" autoplay loop muted playsinline></video>
-          <span class="ref-badge">原始</span>
-          <button type="button" class="zoom-btn" aria-label="放大原始影片">⛶</button>
+          <img id="ref-front" src="" alt="衣服正面">
+          <span class="ref-badge">正面</span>
+          <button type="button" class="zoom-btn" aria-label="放大衣服正面">⛶</button>
+        </div>
+        <div class="ref-media-frame" data-zoomable="true">
+          <img id="ref-back" src="" alt="衣服背面">
+          <span class="ref-badge">背面</span>
+          <button type="button" class="zoom-btn" aria-label="放大衣服背面">⛶</button>
         </div>
       </div>
+    </section>
 
-      <div class="ref-block">
-        <p class="panel-label">要換上的衣服</p>
-        <div class="ref-image-pair">
-          <div class="ref-media-frame ref-image-small" data-zoomable="true">
-            <img id="ref-front" src="" alt="衣服正面">
-            <span class="ref-badge">正面</span>
-            <button type="button" class="zoom-btn" aria-label="放大衣服正面">⛶</button>
-          </div>
-          <div class="ref-media-frame ref-image-small" data-zoomable="true">
-            <img id="ref-back" src="" alt="衣服背面">
-            <span class="ref-badge">背面</span>
-            <button type="button" class="zoom-btn" aria-label="放大衣服背面">⛶</button>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <div class="videos-grid" id="videos-grid">
-      <!-- 4 個影片卡片由 JS 動態產生 -->
+    <!-- 下方：4種方法的直列清單 -->
+    <div class="methods-list" id="methods-list">
+      <!-- 4 個 row (左影片、右長圖) 由 JS 動態產生 -->
     </div>
   </main>
 

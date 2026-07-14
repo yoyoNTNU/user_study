@@ -352,21 +352,25 @@ button { font-family: inherit; }
   margin: 0;
 }
 
-.study-body {
-  display: grid;
-  grid-template-columns: 260px 1fr;
-  gap: 24px;
-  margin-bottom: 32px;
-  align-items: start;
-}
+/* ============================================================
+   以下替換原本的 .study-body 到 .swatch-tag 之間的程式碼
+============================================================ */
 
-.reference-panel {
+/* 垂直流向的作答區主體 */
+.study-body.layout-vertical {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  position: sticky;
-  top: 24px;
-  align-self: start;
+  gap: 32px;
+  margin-bottom: 32px;
+}
+
+/* --- 頂部：衣服參考圖面板 --- */
+.reference-top-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
 }
 
 .panel-label {
@@ -375,10 +379,16 @@ button { font-family: inherit; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--dim);
-  margin: 0 0 10px;
+  margin: 0;
 }
 
-.ref-block { display: flex; flex-direction: column; }
+.ref-image-pair {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
 .ref-media-frame {
   position: relative;
@@ -386,10 +396,10 @@ button { font-family: inherit; }
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--panel);
+  width: 240px; /* 固定寬度 */
   aspect-ratio: 1 / 1;
 }
 
-.ref-media-frame video,
 .ref-media-frame img {
   width: 100%;
   height: 100%;
@@ -412,36 +422,99 @@ button { font-family: inherit; }
   letter-spacing: 0.04em;
 }
 
-.ref-image-pair {
+/* --- 下方：4種方法的直列清單 --- */
+.methods-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 28px;
 }
 
-.videos-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  align-items: start;
-}
-
-.video-card {
-  position: relative;
+/* 每一列 (左影片、右橫圖) */
+.method-row {
+  display: flex;
+  gap: 20px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  overflow: hidden;
+  padding: 20px;
+  position: relative;
+  height: 320px; /* 控制整列高度 */
 }
 
-.video-card video {
+/* 左側影片區塊：固定寬度 */
+.method-video-col {
+  flex: 0 0 280px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #000;
+  border: 1px solid var(--line);
+}
+
+.method-video-col video {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
   display: block;
-  background: #000;
 }
 
-/* signature element — garment swatch tag hanging on each video card */
+/* 右側橫向長圖容器：填滿剩下空間並橫向滾動 */
+.long-image-container {
+  flex: 1 1 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  background: var(--panel-hover);
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  position: relative;
+  
+  /* ============================================================
+     高對比自訂游標：黑色主體 + 白色描邊 (保證在純黑、純白背景下都極清晰)
+     ============================================================ */
+  /* 預設狀態：開掌抓取 (Grab) */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M14.5,11.5V5a1.5,1.5,0,0,0-3,0v6.5h-1V6a1.5,1.5,0,0,0-3,0v5.5h-1V7.5a1.5,1.5,0,0,0-3,0v7.2c0,4,3.2,7.3,7.3,7.3H14c4,0,7.2-3.2,7.2-7.3v-3.2c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v.7h-1v-2c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v2h-1.2z' fill='%23101216' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, grab;
+  
+  /* 平滑的外框過渡效果 */
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.long-image-container img {
+  height: 100%;
+  width: auto;
+  display: block;
+}
+
+.long-image-container:hover {
+  border-color: var(--indigo);
+  color: var(--indigo);
+}
+
+.long-image-container.active {
+  /* 拖曳狀態：收起握拳 (Grabbing) */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M14.5,12V9.5a1.5,1.5,0,0,0-3,0V12h-1V9.5a1.5,1.5,0,0,0-3,0V12h-1V9.5a1.5,1.5,0,0,0-3,0v5.2c0,4,3.2,7.3,7.3,7.3H14c4,0,7.2-3.2,7.2-7.3v-1.2c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v.2h-1v-.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v1h-1.2z' fill='%23101216' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, grabbing;
+  color: var(--indigo);
+  border-color: var(--indigo);
+  /* 在白色圖片邊緣內側加入淡淡的藍色投影，增強拖曳時的視覺反饋 */
+  box-shadow: inset 0 0 12px rgba(102, 114, 232, 0.25);
+}
+
+/* 橫向捲軸樣式優化 */
+.long-image-container::-webkit-scrollbar {
+  height: 8px;
+}
+.long-image-container::-webkit-scrollbar-track {
+  background: var(--panel);
+  border-radius: 4px;
+}
+.long-image-container::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 4px;
+}
+.long-image-container::-webkit-scrollbar-thumb:hover {
+  background: var(--dim);
+}
+
+/* 方法標籤 (A, B, C, D) */
 .swatch-tag {
   position: absolute;
   top: 10px;
@@ -449,15 +522,16 @@ button { font-family: inherit; }
   display: flex;
   align-items: center;
   gap: 6px;
-  background: rgba(16, 18, 22, 0.85);
+  background: rgb(255, 180, 82);
   border: 1px solid var(--line);
   border-radius: 6px;
   padding: 4px 10px;
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 500;
-  color: var(--paper);
+  color: var(--ink);
   backdrop-filter: blur(2px);
+  z-index: 10; /* 確保標籤蓋在影片上面 */
 }
 
 /* ---------------- Playback bar (synchronized control for all videos) ---------------- */
@@ -604,18 +678,18 @@ button { font-family: inherit; }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 720px) {
-  .study-body {
-    grid-template-columns: 1fr;
+  /* 手機版時，把原本左影片右長圖，改成上下疊加 */
+  .method-row {
+    flex-direction: column;
+    height: auto;
   }
-  .reference-panel {
-    position: static;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
+  .method-video-col {
+    flex: 0 0 auto;
+    width: 100%;
+    aspect-ratio: 1 / 1;
   }
-  .ref-block { max-width: 220px; }
-  .videos-grid {
-    grid-template-columns: 1fr 1fr;
+  .long-image-container {
+    height: 180px; /* 手機版給長圖一個固定的顯示高度，方便左右滑動 */
   }
   .question-row {
     flex-direction: column;

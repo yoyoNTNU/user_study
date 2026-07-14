@@ -102,9 +102,9 @@
     groupCurrent: document.getElementById("group-current"),
     groupTotal: document.getElementById("group-total"),
     progressFill: document.getElementById("progress-fill"),
-    originalVideo: document.getElementById("original-video"),
     refFront: document.getElementById("ref-front"),
     refBack: document.getElementById("ref-back"),
+    methodsList: document.getElementById("methods-list"),
     videosGrid: document.getElementById("videos-grid"),
     btnPlayPause: document.getElementById("btn-playpause"),
     scrubber: document.getElementById("scrubber"),
@@ -128,7 +128,7 @@
     });
 
     // 固定顯示的參考素材(原始影片 / 衣服正反面)只會建立一次,init 時直接綁定
-    document.querySelectorAll(".reference-panel .zoom-btn").forEach((btn) => {
+    document.querySelectorAll(".reference-top-panel .zoom-btn").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
         openZoomFrame(btn.closest(".ref-media-frame"));
@@ -148,65 +148,112 @@
   }
 
   function renderGroup() {
-    closeZoom(); // 避免切換到下一組時,放大中的影片節點還卡在 modal 裡
+    closeZoom(); 
     const gId = groupId(currentGroupNumber());
     const methodKeys = CONFIG.METHODS.map((m) => m.key);
     state.currentOrder = shuffle(methodKeys);
     state.answers = {};
 
-    // header / progress
     el.groupCurrent.textContent = pad2(state.groupIndex);
     el.groupTotal.textContent = pad2(state.sessionGroupCount);
-    el.progressFill.style.width =
-      ((state.groupIndex - 1) / state.sessionGroupCount) * 100 + "%";
+    el.progressFill.style.width = ((state.groupIndex - 1) / state.sessionGroupCount) * 100 + "%";
 
-    // 固定顯示的參考素材:原始影片 + 衣物正反面(不隨機、不盲測)
-    el.originalVideo.src = fillTemplate(CONFIG.ORIGINAL_VIDEO_PATH_TEMPLATE, gId);
+    // 載入上方衣服參考圖
     el.refFront.src = fillTemplate(CONFIG.REF_FRONT_PATH_TEMPLATE, gId);
     el.refBack.src = fillTemplate(CONFIG.REF_BACK_PATH_TEMPLATE, gId);
 
-    // videos grid
-    el.videosGrid.innerHTML = "";
+    // 清空並產生直列方法
+    el.methodsList.innerHTML = "";
     const gridVideos = [];
+    
     state.currentOrder.forEach((methodKey, i) => {
       const letter = LETTERS[i];
-      const card = document.createElement("div");
-      card.className = "video-card fade-enter";
+      const row = document.createElement("div");
+      row.className = "method-row fade-enter";
 
+      // 左上角 A/B/C/D 標籤
       const tag = document.createElement("div");
       tag.className = "swatch-tag";
       tag.textContent = letter;
-      card.appendChild(tag);
+      row.appendChild(tag);
 
+      // --- 左側：影片區塊 ---
+      const videoCol = document.createElement("div");
+      videoCol.className = "method-video-col";
       const video = document.createElement("video");
       video.src = fillTemplate(CONFIG.VIDEO_PATH_TEMPLATE, gId, methodKey);
       video.autoplay = true;
       video.loop = true;
       video.muted = true;
       video.playsInline = true;
-      card.appendChild(video);
+      videoCol.appendChild(video);
       gridVideos.push(video);
 
-      const zoomBtn = document.createElement("button");
-      zoomBtn.type = "button";
-      zoomBtn.className = "zoom-btn";
-      zoomBtn.setAttribute("aria-label", `放大檢視 ${letter}`);
-      zoomBtn.textContent = "⛶";
-      zoomBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        openZoomFrame(card);
-      });
-      card.appendChild(zoomBtn);
+      const zoomBtnV = document.createElement("button");
+      zoomBtnV.type = "button";
+      zoomBtnV.className = "zoom-btn";
+      zoomBtnV.textContent = "⛶";
+      zoomBtnV.addEventListener("click", (e) => { e.stopPropagation(); openZoomFrame(videoCol); });
+      videoCol.appendChild(zoomBtnV);
+      row.appendChild(videoCol);
 
-      el.videosGrid.appendChild(card);
+      // --- 右側：橫向長圖區塊 ---
+      // --- 右側：橫向長圖區塊 ---
+      const imgCol = document.createElement("div");
+      imgCol.className = "long-image-container";
+      
+      const img = document.createElement("img");
+      img.src = fillTemplate(CONFIG.LONG_IMAGE_PATH_TEMPLATE, gId, methodKey);
+      imgCol.appendChild(img);
+
+      // --- 這裡開始是新增的：滑鼠拖曳滾動 (Drag to Scroll) 邏輯 ---
+      let isDown = false;
+      let startX;
+      let scrollLeft;
+
+      imgCol.addEventListener('mousedown', (e) => {
+        isDown = true;
+        imgCol.classList.add('active');
+        // 記錄按下去的起始位置與目前的滾動距離
+        startX = e.pageX - imgCol.offsetLeft;
+        scrollLeft = imgCol.scrollLeft;
+      });
+
+      imgCol.addEventListener('mouseleave', () => {
+        isDown = false;
+        imgCol.classList.remove('active');
+      });
+
+      imgCol.addEventListener('mouseup', () => {
+        isDown = false;
+        imgCol.classList.remove('active');
+      });
+
+      imgCol.addEventListener('mousemove', (e) => {
+        if (!isDown) return; // 如果沒有按住就什麼都不做
+        e.preventDefault();  // 避免反白到圖片或其他元素
+        const x = e.pageX - imgCol.offsetLeft;
+        const walk = (x - startX) * 1.5; // 乘以 1.5 是滾動速度，可以自己微調
+        imgCol.scrollLeft = scrollLeft - walk;
+      });
+      // --- 拖曳邏輯結束 ---
+
+      const zoomBtnI = document.createElement("button");
+      zoomBtnI.type = "button";
+      zoomBtnI.className = "zoom-btn";
+      zoomBtnI.textContent = "⛶";
+      zoomBtnI.addEventListener("click", (e) => { e.stopPropagation(); openZoomFrame(imgCol); });
+      imgCol.appendChild(zoomBtnI);
+      row.appendChild(imgCol);
+
+      el.methodsList.appendChild(row);
     });
 
-    // questions(優先渲染,確保就算下面播放列出問題,題目一定看得到)
+    // 渲染題目 (維持原邏輯)
     el.questionsPanel.innerHTML = "";
     CONFIG.QUESTIONS.forEach((q) => {
       const row = document.createElement("div");
       row.className = "question-row fade-enter";
-
       const text = document.createElement("p");
       text.className = "question-text";
       text.textContent = q.text;
@@ -223,24 +270,20 @@
         group.appendChild(btn);
       });
       row.appendChild(group);
-
       el.questionsPanel.appendChild(row);
     });
 
     el.submitStatus.textContent = "";
     updateNextButton();
 
-    // 這一組所有要同步播放的影片:原始影片放第一個當作「主控」時間軸
-    // 包在 try/catch:就算播放列這段出錯,也不會擋到上面題目的顯示
     try {
-      state.allVideos = [el.originalVideo, ...gridVideos];
+      // 由於沒有了原始影片，播放進度的主控改為陣列中的第一支 3DGS 影片
+      state.allVideos = [...gridVideos]; 
       state.isPlaying = true;
       state.isScrubbing = false;
       el.btnPlayPause.textContent = "⏸";
       el.scrubber.value = 0;
       el.timeLabel.textContent = "0:00 / 0:00";
-      // 注意:總長度不再用 loadedmetadata 事件快取,改成每次要用時直接即時讀取
-      // el.originalVideo.duration,避免影片載入太快、事件被錯過導致長度永遠抓不到 0 的問題
     } catch (err) {
       console.error("播放列初始化失敗:", err);
     }
