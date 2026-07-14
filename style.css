@@ -163,6 +163,7 @@ button { font-family: inherit; }
   grid-template-columns: 260px 1fr;
   gap: 24px;
   margin-bottom: 32px;
+  align-items: start;
 }
 
 .reference-panel {
@@ -176,7 +177,7 @@ button { font-family: inherit; }
 
 .panel-label {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 18px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--dim);
@@ -218,8 +219,8 @@ button { font-family: inherit; }
 }
 
 .ref-image-pair {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
 
@@ -227,6 +228,7 @@ button { font-family: inherit; }
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  align-items: start;
 }
 
 .video-card {
@@ -256,7 +258,7 @@ button { font-family: inherit; }
   background: rgba(16, 18, 22, 0.85);
   border: 1px solid var(--line);
   border-radius: 6px;
-  padding: 4px 10px 4px 6px;
+  padding: 4px 10px;
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 500;
@@ -264,13 +266,67 @@ button { font-family: inherit; }
   backdrop-filter: blur(2px);
 }
 
-.swatch-tag::before {
-  content: "";
-  width: 6px;
-  height: 6px;
+/* ---------------- Playback bar (synchronized control for all videos) ---------------- */
+.playback-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px 16px;
+  margin-bottom: 24px;
+}
+
+.playback-btn {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-hover);
+  color: var(--paper);
+  font-size: 15px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.playback-btn:hover { border-color: var(--indigo); }
+
+.scrubber {
+  flex: 1 1 auto;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  cursor: pointer;
+}
+.scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  border: 1px solid var(--dim);
-  display: inline-block;
+  background: var(--indigo);
+  cursor: pointer;
+}
+.scrubber::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: var(--indigo);
+  cursor: pointer;
+}
+
+.time-label {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--dim);
+  min-width: 84px;
+  text-align: right;
 }
 
 /* ---------------- Questions ---------------- */

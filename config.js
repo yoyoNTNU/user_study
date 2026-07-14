@@ -7,8 +7,12 @@ const CONFIG = {
   // 部署步驟請看 apps-script/README.md
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwG1Awun_hDoP7t9PbNFTkjqXYUQcGFmq18vz6eD0H9TXxoA0PmJatglBl7MIzuA2Tg/exec",
 
-  // 總共幾組
-  TOTAL_GROUPS: 2,
+  // 你實際準備了幾組素材(素材庫的總量)
+  TOTAL_GROUPS: 39,
+
+  // 每位使用者實際要作答幾組(從 TOTAL_GROUPS 裡隨機抽樣,不重複)
+  // 如果想要每個人都做完全部組別,把這個設成跟 TOTAL_GROUPS 一樣即可
+  GROUPS_PER_SESSION: 30,
 
   // 4 種方法的「真實名稱」與「對應的影片檔名關鍵字」
   // 影片檔名規則: videos/group{編號}_{KEY}.mp4

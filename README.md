@@ -107,7 +107,14 @@ git push -u origin main
 打開 `config.js`:
 - 改 `QUESTIONS` 陣列可以增減/修改題目文字(目前 3 題)
 - 改 `METHODS` 可以調整方法名稱或 key(要跟影片檔名對上)
-- 改 `TOTAL_GROUPS` 調整總組數
+- 改 `TOTAL_GROUPS` 調整你實際準備了幾組素材
+- 改 `GROUPS_PER_SESSION` 調整每位使用者實際要作答幾組(從 `TOTAL_GROUPS` 裡隨機抽樣、不重複)。
+  例如你準備了 40 組素材,但只想讓每個人回答其中隨機的 30 組,就設定:
+  ```js
+  TOTAL_GROUPS: 40,
+  GROUPS_PER_SESSION: 30,
+  ```
+  如果想讓每個人都做完全部組別,把 `GROUPS_PER_SESSION` 設成跟 `TOTAL_GROUPS` 一樣(或乾脆刪掉這行)即可。
 
 ## 本機測試(上傳GitHub前先預覽)
 

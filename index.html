@@ -54,7 +54,7 @@
       <div class="ref-block">
         <p class="panel-label">原始影片(換裝前)</p>
         <div class="ref-media-frame">
-          <video id="original-video" autoplay loop muted playsinline controls></video>
+          <video id="original-video" autoplay loop muted playsinline></video>
           <span class="ref-badge">原始</span>
         </div>
       </div>
@@ -78,6 +78,12 @@
       <!-- 4 個影片卡片由 JS 動態產生 -->
     </div>
   </main>
+
+  <div class="playback-bar">
+    <button id="btn-playpause" class="playback-btn" aria-label="播放/暫停">⏸</button>
+    <input type="range" id="scrubber" class="scrubber" min="0" max="1000" value="0" step="1">
+    <span id="time-label" class="mono time-label">0:00 / 0:00</span>
+  </div>
 
   <section class="questions-panel" id="questions-panel">
     <!-- 題目由 JS 動態產生 -->
