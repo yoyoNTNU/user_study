@@ -8,7 +8,7 @@ const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwG1Awun_hDoP7t9PbNFTkjqXYUQcGFmq18vz6eD0H9TXxoA0PmJatglBl7MIzuA2Tg/exec",
 
   // 總共幾組
-  TOTAL_GROUPS: 70,
+  TOTAL_GROUPS: 2,
 
   // 4 種方法的「真實名稱」與「對應的影片檔名關鍵字」
   // 影片檔名規則: videos/group{編號}_{KEY}.mp4
