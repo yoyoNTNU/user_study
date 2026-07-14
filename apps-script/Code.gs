@@ -1,0 +1,66 @@
+/**
+ * 使用者研究後端 — 將每一組的作答結果寫入 Google 試算表
+ *
+ * 部署方式請看同資料夾內的 README.md
+ */
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.waitLock(30000);
+
+  try {
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Responses")
+      || createResponsesSheet();
+
+    const data = JSON.parse(e.postData.contents);
+
+    // 動態取得目前這份問卷用了哪些題目 id(第一次收到資料時會建立表頭)
+    const questionIds = Object.keys(data.answers || {});
+    ensureHeader(sheet, questionIds);
+
+    const row = [
+      data.timestamp || new Date().toISOString(),
+      data.session_id || "",
+      data.group_id || "",
+      data.sequence_position || "",
+      data.display_order || "",
+    ];
+    questionIds.forEach((qid) => {
+      row.push(data.answers[qid] || "");
+    });
+
+    sheet.appendRow(row);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "ok" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: "error", message: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function createResponsesSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.insertSheet("Responses");
+  return sheet;
+}
+
+function ensureHeader(sheet, questionIds) {
+  const firstCell = sheet.getRange(1, 1).getValue();
+  if (firstCell === "timestamp") return; // 表頭已存在
+
+  const header = ["timestamp", "session_id", "group_id", "sequence_position", "display_order"].concat(questionIds);
+  sheet.getRange(1, 1, 1, header.length).setValues([header]);
+  sheet.setFrozenRows(1);
+}
+
+// 方便部署後直接用瀏覽器測試網址是否正常(GET 請求)
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: "ok", message: "Apps Script is running" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}

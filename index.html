@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>虛擬換裝方法評比研究</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ 開場說明頁 ============ -->
+<section id="screen-intro" class="screen">
+  <div class="intro-card">
+    <p class="eyebrow">USER STUDY</p>
+    <h1>虛擬換裝結果評比</h1>
+    <p class="intro-text">
+      接下來你會看到 <strong id="intro-total-groups">70</strong> 組。每一組包含:
+      <strong>1 部換裝前的原始影片</strong>、<strong>2 張要換上的衣服正反面照片</strong>,
+      以及 <strong>4 部換裝後的旋轉展示影片</strong>。這 4 部影片是由不同方法產生的,
+      但畫面上只會標示 <span class="tag-inline">A</span>
+      <span class="tag-inline">B</span><span class="tag-inline">C</span><span class="tag-inline">D</span>,
+      不會告訴你各自使用了什麼方法。
+    </p>
+    <p class="intro-text">
+      請仔細觀看 4 部影片後,依據每一題的問題,選出你認為表現最好的一部影片。
+      每一組會有 3 個小問題,全部回答後按「下一組」即可繼續。
+    </p>
+    <p class="intro-text intro-note">
+      作答途中請勿重新整理頁面,已送出的組別會直接記錄,無法回頭修改。
+    </p>
+    <button id="btn-start" class="btn-primary">開始作答</button>
+  </div>
+</section>
+
+<!-- ============ 作答頁 ============ -->
+<section id="screen-study" class="screen hidden">
+  <header class="study-header">
+    <div class="progress-track">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+    <p class="progress-label">
+      <span class="mono">GROUP</span>
+      <span id="group-current" class="mono strong">01</span>
+      <span class="mono">/</span>
+      <span id="group-total" class="mono">70</span>
+    </p>
+  </header>
+
+  <main class="study-body">
+    <aside class="reference-panel">
+      <div class="ref-block">
+        <p class="panel-label">原始影片(換裝前)</p>
+        <div class="ref-media-frame">
+          <video id="original-video" autoplay loop muted playsinline controls></video>
+          <span class="ref-badge">原始</span>
+        </div>
+      </div>
+
+      <div class="ref-block">
+        <p class="panel-label">要換上的衣服</p>
+        <div class="ref-image-pair">
+          <div class="ref-media-frame ref-image-small">
+            <img id="ref-front" src="" alt="衣服正面">
+            <span class="ref-badge">正面</span>
+          </div>
+          <div class="ref-media-frame ref-image-small">
+            <img id="ref-back" src="" alt="衣服背面">
+            <span class="ref-badge">背面</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="videos-grid" id="videos-grid">
+      <!-- 4 個影片卡片由 JS 動態產生 -->
+    </div>
+  </main>
+
+  <section class="questions-panel" id="questions-panel">
+    <!-- 題目由 JS 動態產生 -->
+  </section>
+
+  <footer class="study-footer">
+    <p id="submit-status" class="submit-status"></p>
+    <button id="btn-next" class="btn-primary" disabled>下一組</button>
+  </footer>
+</section>
+
+<!-- ============ 結束頁 ============ -->
+<section id="screen-done" class="screen hidden">
+  <div class="intro-card">
+    <p class="eyebrow">完成</p>
+    <h1>感謝你的參與!</h1>
+    <p class="intro-text">
+      所有組別已經作答完畢,你的回覆已經送出並記錄。感謝你花時間協助這項研究 🙏
+    </p>
+  </div>
+</section>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

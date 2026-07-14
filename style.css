@@ -1,0 +1,384 @@
+/* ============================================================
+   Design tokens
+   ink      背景 — 近黑帶一點藍灰,長時間看影片較不刺眼
+   panel    卡片背景
+   line     細分隔線
+   paper    主要文字 — 暖白,避免刺眼純白
+   dim      次要文字
+   indigo   選取強調色 — 靛藍染料意象
+   rust     次要強調 — 縫線/棉繩意象,用於進度與標籤
+============================================================ */
+:root {
+  --ink: #101216;
+  --panel: #1a1d24;
+  --panel-hover: #21242c;
+  --line: #2b2f39;
+  --paper: #ece9e2;
+  --dim: #9296a3;
+  --indigo: #6672e8;
+  --indigo-dim: #3a3f6b;
+  --rust: #c97b3e;
+  --radius: 10px;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+button { font-family: inherit; }
+
+.hidden { display: none !important; }
+
+.mono { font-family: var(--font-mono); }
+.strong { color: var(--paper); font-weight: 500; }
+
+/* ---------------- Intro / Done screens ---------------- */
+.screen.center-flex,
+#screen-intro,
+#screen-done {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.intro-card {
+  max-width: 620px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 48px 44px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  color: var(--rust);
+  margin: 0 0 12px;
+  text-transform: uppercase;
+}
+
+.intro-card h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 600;
+  margin: 0 0 20px;
+  line-height: 1.25;
+}
+
+.intro-text {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--dim);
+  margin: 0 0 16px;
+}
+
+.intro-note {
+  color: var(--rust);
+  opacity: 0.9;
+}
+
+.tag-inline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  background: var(--indigo-dim);
+  color: var(--paper);
+  margin: 0 2px;
+}
+
+.btn-primary {
+  margin-top: 12px;
+  background: var(--indigo);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 14px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.btn-primary:hover:not(:disabled) { background: #7885f0; }
+.btn-primary:active:not(:disabled) { transform: scale(0.98); }
+.btn-primary:disabled {
+  background: var(--panel-hover);
+  color: var(--dim);
+  cursor: not-allowed;
+}
+
+/* ---------------- Study screen ---------------- */
+#screen-study {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+.study-header {
+  margin-bottom: 28px;
+}
+
+.progress-track {
+  height: 4px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--rust);
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  font-size: 13px;
+  color: var(--dim);
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.study-body {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.reference-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin: 0 0 10px;
+}
+
+.ref-block { display: flex; flex-direction: column; }
+
+.ref-media-frame {
+  position: relative;
+  border: 1px solid var(--rust);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--panel);
+  aspect-ratio: 1 / 1;
+}
+
+.ref-media-frame video,
+.ref-media-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+.ref-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+  background: var(--rust);
+  border-radius: 5px;
+  padding: 3px 8px;
+  letter-spacing: 0.04em;
+}
+
+.ref-image-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.videos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.video-card {
+  position: relative;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.video-card video {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+/* signature element — garment swatch tag hanging on each video card */
+.swatch-tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 18, 22, 0.85);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 4px 10px 4px 6px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--paper);
+  backdrop-filter: blur(2px);
+}
+
+.swatch-tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--dim);
+  display: inline-block;
+}
+
+/* ---------------- Questions ---------------- */
+.questions-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.question-row {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.question-text {
+  font-size: 14.5px;
+  line-height: 1.6;
+  flex: 1 1 320px;
+  margin: 0;
+}
+
+.choice-group {
+  display: flex;
+  gap: 8px;
+}
+
+.choice-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--panel-hover);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.choice-btn:hover {
+  border-color: var(--indigo);
+}
+
+.choice-btn.selected {
+  background: var(--indigo);
+  border-color: var(--indigo);
+  color: #fff;
+}
+
+/* ---------------- Footer ---------------- */
+.study-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.submit-status {
+  font-size: 13px;
+  color: var(--dim);
+  margin: 0;
+}
+
+/* ---------------- Fade transition between groups ---------------- */
+.fade-enter {
+  animation: fadeIn 0.28s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 720px) {
+  .study-body {
+    grid-template-columns: 1fr;
+  }
+  .reference-panel {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ref-block { max-width: 220px; }
+  .videos-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .question-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ---------------- Accessibility ---------------- */
+button:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
