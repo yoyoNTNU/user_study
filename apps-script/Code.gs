@@ -9,27 +9,13 @@ function doPost(e) {
   lock.waitLock(30000);
 
   try {
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Responses")
-      || createResponsesSheet();
-
     const data = JSON.parse(e.postData.contents);
 
-    // 動態取得目前這份問卷用了哪些題目 id(第一次收到資料時會建立表頭)
-    const questionIds = Object.keys(data.answers || {});
-    ensureHeader(sheet, questionIds);
-
-    const row = [
-      data.timestamp || new Date().toISOString(),
-      data.session_id || "",
-      data.group_id || "",
-      data.sequence_position || "",
-      data.display_order || "",
-    ];
-    questionIds.forEach((qid) => {
-      row.push(data.answers[qid] || "");
-    });
-
-    sheet.appendRow(row);
+    if (data.record_type === "profile") {
+      writeProfileRow(data);
+    } else {
+      writeAnswerRow(data);
+    }
 
     return ContentService
       .createTextOutput(JSON.stringify({ status: "ok" }))
@@ -41,6 +27,58 @@ function doPost(e) {
   } finally {
     lock.releaseLock();
   }
+}
+
+function writeAnswerRow(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Responses")
+    || createResponsesSheet();
+
+  // 動態取得目前這份問卷用了哪些題目 id(第一次收到資料時會建立表頭)
+  const questionIds = Object.keys(data.answers || {});
+  ensureHeader(sheet, questionIds);
+
+  const row = [
+    data.timestamp || new Date().toISOString(),
+    data.session_id || "",
+    data.group_id || "",
+    data.sequence_position || "",
+    data.display_order || "",
+  ];
+  questionIds.forEach((qid) => {
+    row.push(data.answers[qid] || "");
+  });
+
+  sheet.appendRow(row);
+}
+
+function writeProfileRow(data) {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Profiles")
+    || createProfilesSheet();
+
+  ensureProfileHeader(sheet);
+
+  sheet.appendRow([
+    data.timestamp || new Date().toISOString(),
+    data.session_id || "",
+    data.name || "",
+    data.gender || "",
+    data.age_range || "",
+  ]);
+}
+
+function createProfilesSheet() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.insertSheet("Profiles");
+  return sheet;
+}
+
+function ensureProfileHeader(sheet) {
+  const firstCell = sheet.getRange(1, 1).getValue();
+  if (firstCell === "timestamp") return; // 表頭已存在
+
+  const header = ["timestamp", "session_id", "name", "gender", "age_range"];
+  sheet.getRange(1, 1, 1, header.length).setValues([header]);
+  sheet.setFrozenRows(1);
 }
 
 function createResponsesSheet() {

@@ -45,6 +45,7 @@ button { font-family: inherit; }
 /* ---------------- Intro / Done screens ---------------- */
 .screen.center-flex,
 #screen-intro,
+#screen-profile,
 #screen-done {
   min-height: 100vh;
   display: flex;
