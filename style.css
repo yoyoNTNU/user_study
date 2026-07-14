@@ -55,7 +55,8 @@ button { font-family: inherit; }
 }
 
 .intro-card {
-  max-width: 620px;
+  width: 100%;
+  max-width: 95%;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -207,7 +208,7 @@ button { font-family: inherit; }
 
 .example-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 14px;
   margin: 14px 0;
 }
@@ -321,7 +322,7 @@ button { font-family: inherit; }
 
 /* ---------------- Study screen ---------------- */
 #screen-study {
-  max-width: 1080px;
+  max-width: 97%;;
   margin: 0 auto;
   padding: 28px 24px 60px;
 }
@@ -438,12 +439,12 @@ button { font-family: inherit; }
   border-radius: var(--radius);
   padding: 20px;
   position: relative;
-  height: 320px; /* 控制整列高度 */
+  height: 300px; /* 控制整列高度 */
 }
 
 /* 左側影片區塊：固定寬度 */
 .method-video-col {
-  flex: 0 0 280px;
+  flex: 0 0 260px;
   position: relative;
   border-radius: 8px;
   overflow: hidden;
