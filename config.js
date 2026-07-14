@@ -8,7 +8,7 @@ const CONFIG = {
   SCRIPT_URL: "https://script.google.com/macros/s/AKfycbwG1Awun_hDoP7t9PbNFTkjqXYUQcGFmq18vz6eD0H9TXxoA0PmJatglBl7MIzuA2Tg/exec",
 
   // 你實際準備了幾組素材(素材庫的總量)
-  TOTAL_GROUPS: 39,
+  TOTAL_GROUPS: 38,
 
   // 每位使用者實際要作答幾組(從 TOTAL_GROUPS 裡隨機抽樣,不重複)
   // 如果想要每個人都做完全部組別,把這個設成跟 TOTAL_GROUPS 一樣即可
@@ -46,7 +46,7 @@ const CONFIG = {
     },
     {
       id: "overall_preference",
-      text: "綜合來看,你最喜歡哪一個結果?",
+      text: "綜合來看,認為整體表現最好的結果?",
     },
   ],
 };

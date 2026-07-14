@@ -13,6 +13,7 @@
     allVideos: [], // 這一組所有需要同步播放的video元素(原始影片 + 4部方法影片)
     isPlaying: true,
     isScrubbing: false,
+    zoomPlaceholder: null,
   };
 
   const LETTERS = ["A", "B", "C", "D"];
@@ -60,6 +61,34 @@
     return `${m}:${String(s).padStart(2, "0")}`;
   }
 
+  // ---------------- 放大檢視 (zoom) ----------------
+  // 把使用者點擊的那個 <video> 或 <img> 節點「移動」進 modal 裡放大顯示,
+  // 關閉時再移回原本位置(用一個 comment placeholder 記住原本插入點)。
+  // 影片節點本身沒有被重建,所以播放進度、同步邏輯完全不受影響。
+  function openZoomFrame(frameEl) {
+    const mediaEl = frameEl && frameEl.querySelector("video, img");
+    if (!mediaEl) return;
+    closeZoom();
+    const placeholder = document.createComment("zoom-placeholder");
+    mediaEl.parentNode.insertBefore(placeholder, mediaEl);
+    state.zoomPlaceholder = placeholder;
+    el.zoomContent.innerHTML = "";
+    mediaEl.classList.add("zoomed-media");
+    el.zoomContent.appendChild(mediaEl);
+    el.zoomModal.classList.remove("hidden");
+  }
+
+  function closeZoom() {
+    const mediaEl = el.zoomContent.querySelector("video, img");
+    if (mediaEl && state.zoomPlaceholder) {
+      mediaEl.classList.remove("zoomed-media");
+      state.zoomPlaceholder.parentNode.insertBefore(mediaEl, state.zoomPlaceholder);
+      state.zoomPlaceholder.remove();
+    }
+    state.zoomPlaceholder = null;
+    el.zoomModal.classList.add("hidden");
+  }
+
   // ---------------- rendering ----------------
   const el = {
     screenIntro: document.getElementById("screen-intro"),
@@ -80,7 +109,29 @@
     timeLabel: document.getElementById("time-label"),
     questionsPanel: document.getElementById("questions-panel"),
     submitStatus: document.getElementById("submit-status"),
+    zoomModal: document.getElementById("zoom-modal"),
+    zoomContent: document.getElementById("zoom-content"),
+    zoomClose: document.getElementById("zoom-close"),
   };
+
+  if (el.zoomModal && el.zoomClose && el.zoomContent) {
+    el.zoomClose.addEventListener("click", closeZoom);
+    el.zoomModal.addEventListener("click", (e) => {
+      // 點擊背景(不是放大的影片/圖片本身)時關閉
+      if (e.target === el.zoomModal) closeZoom();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeZoom();
+    });
+
+    // 固定顯示的參考素材(原始影片 / 衣服正反面)只會建立一次,init 時直接綁定
+    document.querySelectorAll(".reference-panel .zoom-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openZoomFrame(btn.closest(".ref-media-frame"));
+      });
+    });
+  }
 
   function showScreen(name) {
     el.screenIntro.classList.add("hidden");
@@ -92,6 +143,7 @@
   }
 
   function renderGroup() {
+    closeZoom(); // 避免切換到下一組時,放大中的影片節點還卡在 modal 裡
     const gId = groupId(currentGroupNumber());
     const methodKeys = CONFIG.METHODS.map((m) => m.key);
     state.currentOrder = shuffle(methodKeys);
@@ -129,6 +181,17 @@
       video.playsInline = true;
       card.appendChild(video);
       gridVideos.push(video);
+
+      const zoomBtn = document.createElement("button");
+      zoomBtn.type = "button";
+      zoomBtn.className = "zoom-btn";
+      zoomBtn.setAttribute("aria-label", `放大檢視 ${letter}`);
+      zoomBtn.textContent = "⛶";
+      zoomBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openZoomFrame(card);
+      });
+      card.appendChild(zoomBtn);
 
       el.videosGrid.appendChild(card);
     });

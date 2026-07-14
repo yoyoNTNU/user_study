@@ -17,20 +17,64 @@
     <p class="eyebrow">USER STUDY</p>
     <h1>虛擬換裝結果評比</h1>
     <p class="intro-text">
-      接下來你會看到 <strong id="intro-total-groups">70</strong> 組。每一組包含:
+      接下來你會看到 <span id="intro-total-groups">70</span> 組結果。每一組包含:
       <strong>1 部換裝前的原始影片</strong>、<strong>2 張要換上的衣服正反面照片</strong>,
-      以及 <strong>4 部換裝後的旋轉展示影片</strong>。這 4 部影片是由不同方法產生的,
+      以及 <strong>4 部換裝後的旋轉展示影片</strong>。影片會環繞人物旋轉上、中、下三圈，這 4 部影片是由不同方法產生的,
       但畫面上只會標示 <span class="tag-inline">A</span>
       <span class="tag-inline">B</span><span class="tag-inline">C</span><span class="tag-inline">D</span>,
       不會告訴你各自使用了什麼方法。
     </p>
     <p class="intro-text">
-      請仔細觀看 4 部影片後,依據每一題的問題,選出你認為表現最好的一部影片。
+      請仔細觀看 4 部影片後,並依需求自行<strong>放大、暫停、調整撥放進度</strong>,
+      接著依據每一題的問題,選出你認為表現最好的一部影片。
       每一組會有 3 個小問題,全部回答後按「下一組」即可繼續。
     </p>
-    <p class="intro-text intro-note">
-      作答途中請勿重新整理頁面,已送出的組別會直接記錄,無法回頭修改。
+    <p class="intro-text">  
+      <strong>1.哪一個影片的服裝花紋／版型與參考服裝圖片最一致?</strong>
     </p>
+    <p class="intro-text">  
+      • 請注意衣服的圖案、花紋、顏色、版型等細節,判斷是否與參考服裝一致。
+    </p>
+    <p class="intro-text">  
+      <strong>2.哪一個影片在旋轉呈現時最穩定、瑕疵最少?</strong>
+    </p>
+    <p class="intro-text">  
+      • 請著重觀察側面視角、仰視、俯視等角度，觀察圖案是否閃爍或陷入衣服內。
+    </p>
+    <p class="intro-text">  
+      <strong>3.綜合來看,認為整體表現最好的結果?</strong>
+    </p>
+    <p class="intro-text">  
+      • 請選擇你認為整體表現最好的結果，不需要與前兩題的答案相同。
+    </p>
+    <p class="intro-text intro-note">
+      載入影片可能需要一些時間，作答途中請不要重新整理頁面,已送出的組別會直接記錄,無法回頭修改。
+    </p>
+
+    <div class="example-section">
+      <p class="panel-label example-label">常見的「不好」範例參考</p>
+      <p class="intro-text">
+        以下是幾種常見的瑕疵示意,幫助你判斷「多視角穩定性」與「服裝一致性」時有更明確的參考標準:
+      </p>
+      <div class="example-grid">
+        <figure class="example-item">
+          <img src="images/example1.png" alt="範例一:與參考服裝圖案不一致">
+          <figcaption>圖案／花紋與參考服裝不一致</figcaption>
+        </figure>
+        <figure class="example-item">
+          <img src="images/example2.png" alt="範例二:旋轉閃爍">
+          <figcaption>旋轉過程中出現閃爍、圖案陷入衣服內或形狀不穩定</figcaption>
+        </figure>
+        <figure class="example-item">
+          <img src="images/example3.png" alt="範例三:圖案重影">
+          <figcaption>俯視、仰視或側視時，圖案出現重影。</figcaption>
+        </figure>
+      </div>
+      <p class="intro-text example-hint">
+        (以上僅為範例示意,實際作答請以每組影片實際呈現為準)
+      </p>
+    </div>
+
     <button id="btn-start" class="btn-primary">開始作答</button>
   </div>
 </section>
@@ -53,22 +97,25 @@
     <aside class="reference-panel">
       <div class="ref-block">
         <p class="panel-label">原始影片(換裝前)</p>
-        <div class="ref-media-frame">
+        <div class="ref-media-frame" data-zoomable="true">
           <video id="original-video" autoplay loop muted playsinline></video>
           <span class="ref-badge">原始</span>
+          <button type="button" class="zoom-btn" aria-label="放大原始影片">⛶</button>
         </div>
       </div>
 
       <div class="ref-block">
         <p class="panel-label">要換上的衣服</p>
         <div class="ref-image-pair">
-          <div class="ref-media-frame ref-image-small">
+          <div class="ref-media-frame ref-image-small" data-zoomable="true">
             <img id="ref-front" src="" alt="衣服正面">
             <span class="ref-badge">正面</span>
+            <button type="button" class="zoom-btn" aria-label="放大衣服正面">⛶</button>
           </div>
-          <div class="ref-media-frame ref-image-small">
+          <div class="ref-media-frame ref-image-small" data-zoomable="true">
             <img id="ref-back" src="" alt="衣服背面">
             <span class="ref-badge">背面</span>
+            <button type="button" class="zoom-btn" aria-label="放大衣服背面">⛶</button>
           </div>
         </div>
       </div>
@@ -105,6 +152,12 @@
     </p>
   </div>
 </section>
+
+<!-- ============ 放大檢視 Modal ============ -->
+<div id="zoom-modal" class="zoom-modal hidden">
+  <button id="zoom-close" class="zoom-close" aria-label="關閉放大檢視">✕</button>
+  <div class="zoom-content" id="zoom-content"></div>
+</div>
 
 <script src="config.js"></script>
 <script src="app.js"></script>
