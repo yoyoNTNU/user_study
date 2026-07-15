@@ -414,12 +414,19 @@ button { font-family: inherit; }
 }
 
 /* --- 頂部：衣服參考圖面板 --- */
+/* 用 sticky 固定在畫面頂端,往下捲動看方法卡片時衣服參考圖還是留在最上面 */
 .reference-top-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 24px;
+  gap: 12px;
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: var(--ink);
+  border-bottom: 1px solid var(--line);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
 .panel-label {

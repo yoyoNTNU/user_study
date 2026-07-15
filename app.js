@@ -259,12 +259,9 @@
     el.phaseNumber.textContent = state.phase;
     el.phaseQuestionText.textContent = question.text;
 
-    // 只有 Part 1 顯示衣服參考圖;Part 2 不用管花紋對不對,不顯示
-    el.garmentRefSection.classList.toggle("hidden", state.phase !== 1);
-    if (state.phase === 1) {
-      el.refFront.src = fillTemplate(CONFIG.REF_FRONT_PATH_TEMPLATE, gId);
-      el.refBack.src = fillTemplate(CONFIG.REF_BACK_PATH_TEMPLATE, gId);
-    }
+    // 兩個 phase 都顯示衣服參考圖(Part 2 雖然不用管花紋對不對,但留著方便使用者對照)
+    el.refFront.src = fillTemplate(CONFIG.REF_FRONT_PATH_TEMPLATE, gId);
+    el.refBack.src = fillTemplate(CONFIG.REF_BACK_PATH_TEMPLATE, gId);
 
     // 只有 Part 2 顯示播放列(Part 1 是靜態長圖,不需要)
     el.playbackBar.classList.toggle("hidden", state.phase !== 2);
