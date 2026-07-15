@@ -235,7 +235,8 @@ button { font-family: inherit; }
   overflow: hidden;
 }
 
-.example-item img {
+.example-item img,
+.example-item video {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;

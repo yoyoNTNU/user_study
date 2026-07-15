@@ -62,6 +62,8 @@ const CONFIG = {
   },
 
   // 不好範例圖庫(對應 ./images 資料夾),PART1_INTRO / PART2_INTRO 用 key 從這裡挑要顯示哪幾張
+  // 每一項預設是圖片;如果要放影片示範(例如Part2的floater/閃爍這種動態瑕疵比較適合用影片講清楚),
+  // 加一個 type: "video",src 換成影片路徑即可,會自動變成自動播放、靜音、循環播放的預覽影片。
   EXAMPLES: {
     example1: {
       src: "images/example1.png",
@@ -79,9 +81,21 @@ const CONFIG = {
       caption: "圖案出現重影",
     },
     example4: {
-      src: "images/example4.png",
+      type: "video",
+      src: "images/example4.mp4",
       alt: "範例四:浮空雜訊floater",
-      caption: "出現黑色浮空雜訊(floater)或破洞",
+      caption: "出現黑色浮空雜訊(floater)",
+    },
+    // 範例:用影片示範(把 src 換成你自己的檔案路徑,再到 PART2_INTRO.examples 裡加上 "example5" 就會顯示):
+    example5: {
+      type: "video",
+      src: "images/example5.mp4",
+      caption: "旋轉時衣物版型變換",
+    },
+    example6: {
+      type: "video",
+      src: "images/example6.mp4",
+      caption: "旋轉時衣物閃爍",
     },
   },
 
@@ -105,6 +119,6 @@ const CONFIG = {
       "這部分只會看到<strong>4段旋轉影片</strong>(不用管服裝花紋對不對),直接點選瑕疵最少的那一段影片即可,四段影片會並排顯示,方便一次比較。",
       "不考慮花紋／版型是否正確,只看旋轉過程中是否出現浮空雜訊(floater)、閃爍、變形,影片可以放大、暫停、調整撥放進度、切換 1x / 2x 速度後再作答。",
     ],
-    examples: ["example4"],
+    examples: ["example4", "example5", "example6"],
   },
 };

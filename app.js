@@ -204,10 +204,22 @@
       if (!ex) return;
       const fig = document.createElement("figure");
       fig.className = "example-item";
-      const img = document.createElement("img");
-      img.src = ex.src;
-      img.alt = ex.alt || "";
-      fig.appendChild(img);
+
+      let media;
+      if (ex.type === "video") {
+        media = document.createElement("video");
+        media.src = ex.src;
+        media.autoplay = true;
+        media.loop = true;
+        media.muted = true;
+        media.playsInline = true;
+      } else {
+        media = document.createElement("img");
+        media.src = ex.src;
+        media.alt = ex.alt || "";
+      }
+      fig.appendChild(media);
+
       const caption = document.createElement("figcaption");
       caption.textContent = ex.caption || "";
       fig.appendChild(caption);
