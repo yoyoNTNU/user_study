@@ -33,22 +33,43 @@ function writeAnswerRow(data) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Responses")
     || createResponsesSheet();
 
-  // 動態取得目前這份問卷用了哪些題目 id(第一次收到資料時會建立表頭)
-  const questionIds = Object.keys(data.answers || {});
-  ensureHeader(sheet, questionIds);
+  ensureAnswerHeader(sheet);
 
-  const row = [
+  // 新版 payload 每次只會有一題答案(Part 1 / Part 2 各自一題),
+  // 用 phase + question_id 明確記錄是哪個階段、哪一題,而不是把題目動態展開成欄位,
+  // 這樣以後題目內容或數量再變動也不會讓表格欄位對不齊。
+  const answers = data.answers || {};
+  const questionId = Object.keys(answers)[0] || "";
+  const answerMethod = answers[questionId] || "";
+
+  sheet.appendRow([
     data.timestamp || new Date().toISOString(),
     data.session_id || "",
+    data.phase || "",
     data.group_id || "",
     data.sequence_position || "",
     data.display_order || "",
-  ];
-  questionIds.forEach((qid) => {
-    row.push(data.answers[qid] || "");
-  });
+    questionId,
+    answerMethod,
+  ]);
+}
 
-  sheet.appendRow(row);
+function ensureAnswerHeader(sheet) {
+  const firstCell = sheet.getRange(1, 1).getValue();
+  if (firstCell === "timestamp") return; // 表頭已存在
+
+  const header = [
+    "timestamp",
+    "session_id",
+    "phase",
+    "group_id",
+    "sequence_position",
+    "display_order",
+    "question_id",
+    "answer_method",
+  ];
+  sheet.getRange(1, 1, 1, header.length).setValues([header]);
+  sheet.setFrozenRows(1);
 }
 
 function writeProfileRow(data) {
@@ -85,15 +106,6 @@ function createResponsesSheet() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.insertSheet("Responses");
   return sheet;
-}
-
-function ensureHeader(sheet, questionIds) {
-  const firstCell = sheet.getRange(1, 1).getValue();
-  if (firstCell === "timestamp") return; // 表頭已存在
-
-  const header = ["timestamp", "session_id", "group_id", "sequence_position", "display_order"].concat(questionIds);
-  sheet.getRange(1, 1, 1, header.length).setValues([header]);
-  sheet.setFrozenRows(1);
 }
 
 // 方便部署後直接用瀏覽器測試網址是否正常(GET 請求)

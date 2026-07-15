@@ -46,6 +46,7 @@ button { font-family: inherit; }
 .screen.center-flex,
 #screen-intro,
 #screen-profile,
+#screen-phase-intro,
 #screen-done {
   min-height: 100vh;
   display: flex;
@@ -131,6 +132,19 @@ button { font-family: inherit; }
   color: var(--dim);
   cursor: not-allowed;
 }
+
+.btn-debug {
+  display: block;
+  margin: 10px auto 0;
+  background: transparent;
+  border: none;
+  color: var(--dim);
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px;
+}
+.btn-debug:hover { color: var(--rust); }
 
 /* ---------------- Basic info (profile) section on intro screen ---------------- */
 .profile-section {
@@ -353,6 +367,39 @@ button { font-family: inherit; }
   margin: 0;
 }
 
+/* ---------------- Phase question header (置頂的單一題目) ---------------- */
+.phase-question-section {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 24px;
+}
+
+.phase-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--rust);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+.phase-question-text {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin: 0 0 6px;
+  color: var(--paper);
+}
+
+.phase-hint {
+  font-size: 13px;
+  color: var(--dim);
+  margin: 0;
+}
+
 /* ============================================================
    以下替換原本的 .study-body 到 .swatch-tag 之間的程式碼
 ============================================================ */
@@ -423,29 +470,37 @@ button { font-family: inherit; }
   letter-spacing: 0.04em;
 }
 
-/* --- 下方：4種方法的直列清單 --- */
+/* --- 下方:4種方法的清單(依 phase 切換版面) --- */
 .methods-list {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-}
-
-/* 每一列 (左影片、右橫圖) */
-.method-row {
-  display: flex;
   gap: 20px;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 20px;
-  position: relative;
-  height: 300px; /* 控制整列高度 */
 }
 
-/* 左側影片區塊：固定寬度 */
-.method-video-col {
-  flex: 0 0 260px;
+/* Part 2:4段短版影片並排成一列,使用者可以一次看全部 */
+.methods-list.phase-2-layout {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* 方法卡片共用的「已選取」外框(不管是長圖還是影片) */
+.selectable { cursor: pointer; }
+.selectable.selected {
+  outline: 3px solid var(--indigo);
+  outline-offset: -3px;
+}
+.selectable.selected .swatch-tag {
+  background: var(--indigo);
+  color: #fff;
+  border-color: var(--indigo);
+}
+
+/* Part 2:單一方法的影片卡片(並排一列,置中的正方形) */
+.method-video-col.standalone {
   position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
   border-radius: 8px;
   overflow: hidden;
   background: #000;
@@ -459,60 +514,25 @@ button { font-family: inherit; }
   display: block;
 }
 
-/* 右側橫向長圖容器：填滿剩下空間並橫向滾動 */
+/* Part 1:單一方法的長圖容器(直列堆疊,整張圖依容器寬度等比例完整顯示,不裁切、不用拖曳) */
 .long-image-container {
-  flex: 1 1 auto;
-  overflow-x: auto;
-  overflow-y: hidden;
+  width: 100%;
   background: var(--panel-hover);
   border-radius: 8px;
   border: 1px solid var(--line);
   position: relative;
-  
-  /* ============================================================
-     高對比自訂游標：黑色主體 + 白色描邊 (保證在純黑、純白背景下都極清晰)
-     ============================================================ */
-  /* 預設狀態：開掌抓取 (Grab) */
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M14.5,11.5V5a1.5,1.5,0,0,0-3,0v6.5h-1V6a1.5,1.5,0,0,0-3,0v5.5h-1V7.5a1.5,1.5,0,0,0-3,0v7.2c0,4,3.2,7.3,7.3,7.3H14c4,0,7.2-3.2,7.2-7.3v-3.2c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v.7h-1v-2c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v2h-1.2z' fill='%23101216' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, grab;
-  
-  /* 平滑的外框過渡效果 */
+  cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .long-image-container img {
-  height: 100%;
-  width: auto;
+  width: 100%;
+  height: auto;
   display: block;
 }
 
 .long-image-container:hover {
   border-color: var(--indigo);
-  color: var(--indigo);
-}
-
-.long-image-container.active {
-  /* 拖曳狀態：收起握拳 (Grabbing) */
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M14.5,12V9.5a1.5,1.5,0,0,0-3,0V12h-1V9.5a1.5,1.5,0,0,0-3,0V12h-1V9.5a1.5,1.5,0,0,0-3,0v5.2c0,4,3.2,7.3,7.3,7.3H14c4,0,7.2-3.2,7.2-7.3v-1.2c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v.2h-1v-.5c0-.8-.7-1.5-1.5-1.5s-1.5.7-1.5,1.5v1h-1.2z' fill='%23101216' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E") 12 12, grabbing;
-  color: var(--indigo);
-  border-color: var(--indigo);
-  /* 在白色圖片邊緣內側加入淡淡的藍色投影，增強拖曳時的視覺反饋 */
-  box-shadow: inset 0 0 12px rgba(102, 114, 232, 0.25);
-}
-
-/* 橫向捲軸樣式優化 */
-.long-image-container::-webkit-scrollbar {
-  height: 8px;
-}
-.long-image-container::-webkit-scrollbar-track {
-  background: var(--panel);
-  border-radius: 4px;
-}
-.long-image-container::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: 4px;
-}
-.long-image-container::-webkit-scrollbar-thumb:hover {
-  background: var(--dim);
 }
 
 /* 方法標籤 (A, B, C, D) */
@@ -563,6 +583,14 @@ button { font-family: inherit; }
 }
 .playback-btn:hover { border-color: var(--indigo); }
 
+.speed-btn {
+  width: auto;
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+}
+
 .scrubber {
   flex: 1 1 auto;
   -webkit-appearance: none;
@@ -598,61 +626,6 @@ button { font-family: inherit; }
   text-align: right;
 }
 
-/* ---------------- Questions ---------------- */
-.questions-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.question-row {
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 18px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-
-.question-text {
-  font-size: 14.5px;
-  line-height: 1.6;
-  flex: 1 1 320px;
-  margin: 0;
-}
-
-.choice-group {
-  display: flex;
-  gap: 8px;
-}
-
-.choice-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: var(--panel-hover);
-  color: var(--paper);
-  font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.12s ease;
-}
-
-.choice-btn:hover {
-  border-color: var(--indigo);
-}
-
-.choice-btn.selected {
-  background: var(--indigo);
-  border-color: var(--indigo);
-  color: #fff;
-}
-
 /* ---------------- Footer ---------------- */
 .study-footer {
   display: flex;
@@ -679,22 +652,8 @@ button { font-family: inherit; }
 
 /* ---------------- Responsive ---------------- */
 @media (max-width: 720px) {
-  /* 手機版時，把原本左影片右長圖，改成上下疊加 */
-  .method-row {
-    flex-direction: column;
-    height: auto;
-  }
-  .method-video-col {
-    flex: 0 0 auto;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-  }
-  .long-image-container {
-    height: 180px; /* 手機版給長圖一個固定的顯示高度，方便左右滑動 */
-  }
-  .question-row {
-    flex-direction: column;
-    align-items: flex-start;
+  .methods-list.phase-2-layout {
+    grid-template-columns: 1fr;
   }
 }
 
