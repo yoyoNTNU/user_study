@@ -524,13 +524,18 @@ button { font-family: inherit; }
 
 /* Part 1:單一方法的長圖容器(直列堆疊,整張圖依容器寬度等比例完整顯示,不裁切、不用拖曳) */
 .long-image-container {
-  width: 100%;
+  width: 85%;
   background: var(--panel-hover);
   border-radius: 8px;
   border: 1px solid var(--line);
   position: relative;
   cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  margin: 0 auto; 
+  flex: 0 0 85%;
 }
 
 .long-image-container img {
