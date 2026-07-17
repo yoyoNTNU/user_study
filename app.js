@@ -103,7 +103,10 @@
     mediaEl.parentNode.insertBefore(placeholder, mediaEl);
     state.zoomPlaceholder = placeholder;
     el.zoomContent.innerHTML = "";
-    mediaEl.classList.add("zoomed-media");
+
+    const isPannable = frameEl.classList.contains("long-image-container");
+    el.zoomContent.classList.toggle("zoom-pan-mode", isPannable);
+    mediaEl.classList.add(isPannable ? "zoomed-media-pan" : "zoomed-media");
     el.zoomContent.appendChild(mediaEl);
     el.zoomModal.classList.remove("hidden");
   }
@@ -111,12 +114,60 @@
   function closeZoom() {
     const mediaEl = el.zoomContent.querySelector("video, img");
     if (mediaEl && state.zoomPlaceholder) {
-      mediaEl.classList.remove("zoomed-media");
+      mediaEl.classList.remove("zoomed-media", "zoomed-media-pan");
       state.zoomPlaceholder.parentNode.insertBefore(mediaEl, state.zoomPlaceholder);
       state.zoomPlaceholder.remove();
     }
     state.zoomPlaceholder = null;
+    el.zoomContent.classList.remove("zoom-pan-mode", "panning");
     el.zoomModal.classList.add("hidden");
+  }
+
+  // 長條截圖放大後:滑鼠拖曳兩軸平移(原生捲軸也同時可用,觸控裝置直接滑動即可)
+  // 長條截圖放大後:滑鼠拖曳兩軸平移(修正版:關閉原生圖片拖曳殘影、
+  // mousemove/mouseup 綁在 window 上不怕滑太快衝出容器、用 requestAnimationFrame 讓捲動更滑順)
+  function setupZoomPanDrag(container) {
+    let isDown = false;
+    let startX = 0;
+    let startY = 0;
+    let scrollLeftStart = 0;
+    let scrollTopStart = 0;
+    let pendingDX = 0;
+    let pendingDY = 0;
+    let rafId = null;
+
+    function applyScroll() {
+      container.scrollLeft = scrollLeftStart - pendingDX;
+      container.scrollTop = scrollTopStart - pendingDY;
+      rafId = null;
+    }
+
+    container.addEventListener("mousedown", (e) => {
+      if (!container.classList.contains("zoom-pan-mode")) return;
+      e.preventDefault(); // 避免觸發瀏覽器原生的圖片拖曳殘影
+      isDown = true;
+      container.classList.add("panning");
+      startX = e.clientX;
+      startY = e.clientY;
+      scrollLeftStart = container.scrollLeft;
+      scrollTopStart = container.scrollTop;
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isDown) return;
+      pendingDX = e.clientX - startX;
+      pendingDY = e.clientY - startY;
+      if (rafId === null) rafId = requestAnimationFrame(applyScroll);
+    });
+
+    window.addEventListener("mouseup", () => {
+      if (!isDown) return;
+      isDown = false;
+      container.classList.remove("panning");
+    });
+
+    // 保險:徹底擋掉瀏覽器原生的圖片拖曳行為
+    container.addEventListener("dragstart", (e) => e.preventDefault());
   }
 
   // ---------------- DOM refs ----------------
@@ -166,6 +217,7 @@
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeZoom();
     });
+    setupZoomPanDrag(el.zoomContent);
 
     // 固定顯示的參考素材(衣服正反面)只會建立一次,init 時直接綁定
     document.querySelectorAll(".reference-top-panel .zoom-btn").forEach((btn) => {

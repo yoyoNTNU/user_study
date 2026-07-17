@@ -319,6 +319,54 @@ button { font-family: inherit; }
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 
+/* 長條截圖放大:改成原始解析度 + 可拖曳平移,不受螢幕寬度限制 */
+.zoom-content.zoom-pan-mode {
+  width: 90vw;
+  height: 88vh;
+  max-width: none;
+  max-height: none;
+  overflow: auto;
+  align-items: flex-start;
+  justify-content: flex-start;
+  cursor: grab;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+}
+.zoom-content.zoom-pan-mode {
+  cursor: grab;
+}
+.zoom-content.zoom-pan-mode.panning {
+  cursor: grabbing;
+}
+
+.zoomed-media-pan {
+  width: auto !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  object-fit: none !important;
+  display: block;
+  -webkit-user-drag: none;
+  user-select: none;
+}
+
+.zoom-content.zoom-pan-mode::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.zoom-content.zoom-pan-mode::-webkit-scrollbar-track {
+  background: var(--panel);
+}
+.zoom-content.zoom-pan-mode::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 5px;
+}
+.zoom-content.zoom-pan-mode::-webkit-scrollbar-thumb:hover {
+  background: var(--dim);
+}
+
 .zoom-close {
   position: absolute;
   top: 20px;
